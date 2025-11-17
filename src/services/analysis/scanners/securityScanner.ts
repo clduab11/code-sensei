@@ -22,8 +22,8 @@ export class SecurityScanner {
       const line = lines[i];
       
       // Check for string concatenation in SQL queries
-      if (line.match(/(SELECT|INSERT|UPDATE|DELETE).*\+.*["']/i) ||
-          line.match(/["'].*\+.*(SELECT|INSERT|UPDATE|DELETE)/i)) {
+      if (line.match(/(SELECT|INSERT|UPDATE|DELETE).*["'].*\+/i) ||
+          line.match(/\+.*(SELECT|INSERT|UPDATE|DELETE)/i)) {
         issues.push({
           severity: 'critical',
           title: 'Potential SQL Injection',

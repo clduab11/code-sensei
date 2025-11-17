@@ -1,7 +1,7 @@
 import { Issue } from '../../../types';
 
 export class PythonAnalyzer {
-  async analyze(content: string, filename: string): Promise<Issue[]> {
+  async analyze(content: string, _filename: string): Promise<Issue[]> {
     const issues: Issue[] = [];
 
     try {

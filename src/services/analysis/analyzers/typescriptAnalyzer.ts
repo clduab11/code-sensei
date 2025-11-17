@@ -1,17 +1,17 @@
 import { Issue } from '../../../types';
-import { parse } from '@babel/parser';
+// import { parse } from '@babel/parser';
 
 export class TypeScriptAnalyzer {
-  async analyze(content: string, filename: string): Promise<Issue[]> {
+  async analyze(content: string, _filename: string): Promise<Issue[]> {
     const issues: Issue[] = [];
 
     try {
-      // Parse TypeScript/JavaScript code
-      const ast = parse(content, {
-        sourceType: 'module',
-        plugins: ['typescript', 'jsx'],
-        errorRecovery: true,
-      });
+      // Parse TypeScript/JavaScript code (for future AST-based analysis)
+      // const ast = parse(content, {
+      //   sourceType: 'module',
+      //   plugins: ['typescript', 'jsx'],
+      //   errorRecovery: true,
+      // });
 
       const lines = content.split('\n');
       

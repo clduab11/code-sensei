@@ -1,4 +1,4 @@
-import { Probot, Context } from 'probot';
+import { Probot } from 'probot';
 import { setupPRHandlers } from './handlers/pullRequestHandler';
 import { setupStatusCheckHandlers } from './handlers/statusCheckHandler';
 import { setupAutoMergeHandlers } from './handlers/autoMergeHandler';
@@ -14,11 +14,11 @@ export default (app: Probot) => {
   setupStatusCheckHandlers(app);
   setupAutoMergeHandlers(app);
 
-  app.on('installation.created', async (context: Context<'installation.created'>) => {
+  app.on('installation.created', async () => {
     app.log.info('App installed on repository');
   });
 
-  app.on('installation.deleted', async (context: Context<'installation.deleted'>) => {
+  app.on('installation.deleted', async () => {
     app.log.info('App uninstalled from repository');
   });
 

@@ -12,7 +12,7 @@ export default function Dashboard() {
   const fetchMetrics = async () => {
     try {
       const response = await fetch('/api/metrics');
-      const data = await response.json();
+      const data = await response.json() as DashboardMetrics;
       setMetrics(data);
     } catch (error) {
       console.error('Error fetching metrics:', error);

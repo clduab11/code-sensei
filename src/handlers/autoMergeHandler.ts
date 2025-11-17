@@ -54,7 +54,7 @@ export function setupAutoMergeHandlers(app: Probot) {
         issue_number: pull.number,
       });
 
-      const sensei Comment = comments.data.find(comment => 
+      const senseiComment = comments.data.find(comment => 
         comment.body?.includes('Code Sensei AI Review')
       );
 
@@ -95,7 +95,7 @@ export function setupAutoMergeHandlers(app: Probot) {
         });
 
       } catch (error) {
-        app.log.error(`Failed to auto-merge PR #${pull.number}:`, error);
+        app.log.error(`Failed to auto-merge PR #${pull.number}: ${error}`);
       }
     }
   });

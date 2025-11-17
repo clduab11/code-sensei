@@ -26,7 +26,7 @@ export class ComplexityAnalyzer {
     };
   }
 
-  private calculateCyclomaticComplexity(content: string, language: string): number {
+  private calculateCyclomaticComplexity(content: string, _language: string): number {
     let complexity = 1; // Base complexity
 
     // Count decision points
@@ -54,7 +54,7 @@ export class ComplexityAnalyzer {
     return complexity;
   }
 
-  private calculateCognitiveComplexity(content: string, language: string): number {
+  private calculateCognitiveComplexity(content: string, _language: string): number {
     let complexity = 0;
     let nestingLevel = 0;
 
@@ -92,7 +92,7 @@ export class ComplexityAnalyzer {
   private calculateMaintainabilityIndex(
     loc: number,
     cyclomatic: number,
-    cognitive: number
+    _cognitive: number
   ): number {
     // Simplified maintainability index calculation
     // Real formula: MI = 171 - 5.2 * ln(Halstead Volume) - 0.23 * (Cyclomatic Complexity) - 16.2 * ln(Lines of Code)

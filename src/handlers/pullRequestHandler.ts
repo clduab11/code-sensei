@@ -1,4 +1,4 @@
-import { Probot, Context } from 'probot';
+import { Probot } from 'probot';
 import { CodeAnalysisService } from '../services/analysis/codeAnalysisService';
 import { AIReviewService } from '../services/ai/aiReviewService';
 import { AutoFixService } from '../services/autofix/autoFixService';
@@ -6,7 +6,7 @@ import { createReviewComment, updateCheckRun } from '../utils/githubUtils';
 
 export function setupPRHandlers(app: Probot) {
   // Handle PR opened, synchronize, and reopened events
-  app.on(['pull_request.opened', 'pull_request.synchronize', 'pull_request.reopened'], async (context: Context<'pull_request.opened'>) => {
+  app.on(['pull_request.opened', 'pull_request.synchronize', 'pull_request.reopened'], async (context) => {
     const { pull_request, repository } = context.payload;
     
     app.log.info(`Processing PR #${pull_request.number} in ${repository.full_name}`);
@@ -91,7 +91,7 @@ export function setupPRHandlers(app: Probot) {
       );
 
     } catch (error) {
-      app.log.error('Error processing PR:', error);
+      app.log.error(`Error processing PR: ${error}`);
       await context.octokit.issues.createComment({
         owner: repository.owner.login,
         repo: repository.name,

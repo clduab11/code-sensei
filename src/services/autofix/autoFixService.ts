@@ -34,12 +34,12 @@ export class AutoFixService {
         };
       }
 
-      // Get branch reference
-      const branchRef = await this.octokit.git.getRef({
-        owner: this.owner,
-        repo: this.repo,
-        ref: `heads/${branch}`,
-      });
+      // Get branch reference (for future use)
+      // const branchRef = await this.octokit.git.getRef({
+      //   owner: this.owner,
+      //   repo: this.repo,
+      //   ref: `heads/${branch}`,
+      // });
 
       // Apply fixes for each suggestion
       for (const suggestion of autoFixableSuggestions) {
@@ -127,7 +127,7 @@ export class AutoFixService {
     }
   }
 
-  async addTests(filePath: string, branch: string): Promise<string[]> {
+  async addTests(filePath: string, _branch: string): Promise<string[]> {
     // Placeholder for test generation
     // In a real implementation, this would use AI to generate appropriate tests
     const testFilePath = filePath.replace(/\.(ts|js|py|go|rs)$/, '.test.$1');
@@ -135,7 +135,7 @@ export class AutoFixService {
     return [testFilePath];
   }
 
-  async formatCode(filePath: string, language: string): Promise<boolean> {
+  async formatCode(_filePath: string, _language: string): Promise<boolean> {
     // Placeholder for code formatting
     // In a real implementation, this would use appropriate formatters
     // (Prettier for JS/TS, Black for Python, gofmt for Go, rustfmt for Rust)
