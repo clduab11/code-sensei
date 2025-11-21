@@ -196,7 +196,7 @@ export class AutoFixService {
       await octokit.git.updateRef({
         owner: context.owner,
         repo: context.repo,
-        ref: `heads/${context.ref}`,
+        ref: context.ref.startsWith('refs/') ? context.ref : `heads/${context.ref}`,
         sha: newCommit.sha,
       });
 

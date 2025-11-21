@@ -109,8 +109,10 @@ async function handlePullRequestReview(
         .map(issue => ({
           path: issue.file,
           line: issue.line!,
+          side: 'RIGHT' as const,
           body: `**${issue.severity.toUpperCase()}**: ${issue.message}\n\n${issue.suggestion || ''}`,
-        }));
+        }))
+        .slice(0, 30); // GitHub API limit is 30, not 50
 
       if (comments.length > 0) {
         await context.octokit.pulls.createReview({
@@ -118,7 +120,7 @@ async function handlePullRequestReview(
           repo: repository.name,
           pull_number: pull_request.number,
           event: 'COMMENT',
-          comments: comments.slice(0, 50), // GitHub API limit
+          comments,
         });
       }
     }

@@ -267,6 +267,10 @@ export class ASTParser {
 
   /**
    * Analyze Python code (simplified - would use tree-sitter in production)
+   * 
+   * NOTE: This is a simplified pattern-based analysis.
+   * Production-ready implementation should use tree-sitter for proper AST parsing.
+   * See: tree-sitter-python, tree-sitter-go, tree-sitter-rust packages
    */
   private async analyzePython(
     content: string,
@@ -330,6 +334,10 @@ export class ASTParser {
 
   /**
    * Analyze Go code (simplified)
+   * 
+   * NOTE: This is a simplified pattern-based analysis.
+   * Production-ready implementation should use tree-sitter for proper AST parsing.
+   * See: tree-sitter-python, tree-sitter-go, tree-sitter-rust packages
    */
   private async analyzeGo(
     content: string,
@@ -369,6 +377,10 @@ export class ASTParser {
 
   /**
    * Analyze Rust code (simplified)
+   * 
+   * NOTE: This is a simplified pattern-based analysis.
+   * Production-ready implementation should use tree-sitter for proper AST parsing.
+   * See: tree-sitter-python, tree-sitter-go, tree-sitter-rust packages
    */
   private async analyzeRust(
     content: string,
