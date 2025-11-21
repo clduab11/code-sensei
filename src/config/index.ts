@@ -40,6 +40,7 @@ const ConfigSchema = z.object({
     slack: z.object({
       botToken: z.string().optional(),
       signingSecret: z.string().optional(),
+      defaultChannel: z.string().default('#code-reviews'),
     }).optional(),
     jira: z.object({
       host: z.string().optional(),

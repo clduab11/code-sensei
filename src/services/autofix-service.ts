@@ -4,6 +4,9 @@ import { logger } from '../utils/logger';
 import { config } from '../config';
 import * as Diff from 'diff';
 
+// Type alias for GitHub tree object parameter
+type GitHubTreeObject = Parameters<Octokit['git']['createTree']>[0]['tree'];
+
 export class AutoFixService {
   /**
    * Apply auto-fixes to a pull request
@@ -177,12 +180,12 @@ export class AutoFixService {
         return item;
       });
 
-      // Type assertion is necessary because tree structure comes from GitHub API
-      // and needs to be passed back with potentially modified SHA values
+      // Type assertion needed: tree structure from getTree() is compatible with createTree()
+      // but needs modified SHA values for updated files
       const { data: newTree } = await octokit.git.createTree({
         owner: context.owner,
         repo: context.repo,
-        tree: tree as Parameters<typeof octokit.git.createTree>[0]['tree'],
+        tree: tree as GitHubTreeObject,
       });
 
       // Create commit

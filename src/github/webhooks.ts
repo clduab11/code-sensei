@@ -110,7 +110,7 @@ async function handlePullRequestReview(
         .map(issue => ({
           path: issue.file,
           line: issue.line!,
-          side: 'RIGHT' as const,
+          side: 'RIGHT' as const, // 'RIGHT' = PR branch (new code), 'LEFT' = base branch (old code)
           body: `**${issue.severity.toUpperCase()}**: ${issue.message}\n\n${issue.suggestion || ''}`,
         }))
         .slice(0, 30); // GitHub API limit is 30, not 50
