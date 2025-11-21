@@ -112,8 +112,8 @@ export const config = ConfigSchema.parse({
   },
 
   security: {
-    jwtSecret: process.env.JWT_SECRET || 'change-me-in-production',
-    sessionSecret: process.env.SESSION_SECRET || 'change-me-in-production',
+    jwtSecret: process.env.JWT_SECRET,
+    sessionSecret: process.env.SESSION_SECRET,
   },
 
   integrations: {
