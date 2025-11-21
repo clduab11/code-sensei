@@ -32,8 +32,8 @@ const ConfigSchema = z.object({
   }),
 
   security: z.object({
-    jwtSecret: z.string(),
-    sessionSecret: z.string(),
+    jwtSecret: z.string().min(1, 'JWT_SECRET is required and cannot be empty'),
+    sessionSecret: z.string().min(1, 'SESSION_SECRET is required and cannot be empty'),
   }),
 
   integrations: z.object({
@@ -82,6 +82,28 @@ const ConfigSchema = z.object({
     enterpriseCustom: z.boolean().default(true),
   }),
 });
+
+// Validate required environment variables
+function validateRequiredSecrets() {
+  const missing: string[] = [];
+  
+  if (!process.env.JWT_SECRET) {
+    missing.push('JWT_SECRET');
+  }
+  if (!process.env.SESSION_SECRET) {
+    missing.push('SESSION_SECRET');
+  }
+  
+  if (missing.length > 0) {
+    throw new Error(
+      `Required security environment variables are missing: ${missing.join(', ')}\n` +
+      'Please set these variables in your .env file or environment before starting the application.'
+    );
+  }
+}
+
+// Validate secrets before parsing config
+validateRequiredSecrets();
 
 export const config = ConfigSchema.parse({
   env: process.env.NODE_ENV || 'development',

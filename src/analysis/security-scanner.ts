@@ -66,8 +66,11 @@ export class SecurityScanner {
     issues: ReviewIssue[]
   ) {
     // NOTE: These patterns may produce false positives for legitimate strings,
-    // test data, or example values. Consider implementing entropy analysis or
-    // checking for common API key prefixes (sk-, pk-, etc.) to improve accuracy.
+    // test data, or example values. They may also miss encoded/obfuscated secrets.
+    // Consider implementing:
+    // - Entropy analysis for random-looking strings
+    // - Common API key prefix detection (sk-, pk-, etc.)
+    // - Complementary secret scanning tools (e.g., TruffleHog, detect-secrets)
     const secretPatterns = [
       { pattern: /(?:api[_-]?key|apikey)[\s]*[:=][\s]*['"][a-zA-Z0-9]{20,}['"]/i, name: 'API Key' },
       { pattern: /(?:password|passwd|pwd)[\s]*[:=][\s]*['"][^'"]+['"]/i, name: 'Password' },

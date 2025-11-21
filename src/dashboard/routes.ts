@@ -236,7 +236,7 @@ async function getQualityTrends(req: Request, res: Response) {
        FROM reviews r
        JOIN repositories rp ON r.repository_id = rp.id
        WHERE rp.full_name = $1
-         AND created_at > NOW() - ($2 || ' days')::interval
+         AND created_at > NOW() - make_interval(days => $2)
        GROUP BY DATE(created_at)
        ORDER BY date DESC`,
       [`${owner}/${repo}`, days]
