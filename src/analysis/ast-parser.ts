@@ -1,7 +1,5 @@
 import * as babelParser from '@babel/parser';
 import traverse from '@babel/traverse';
-import * as acorn from 'acorn';
-import * as acornWalk from 'acorn-walk';
 import { CodeMetrics, ReviewIssue } from '../types';
 import { logger } from '../utils/logger';
 

@@ -177,10 +177,12 @@ export class AutoFixService {
         return item;
       });
 
+      // Type assertion is necessary because tree structure comes from GitHub API
+      // and needs to be passed back with potentially modified SHA values
       const { data: newTree } = await octokit.git.createTree({
         owner: context.owner,
         repo: context.repo,
-        tree: tree as any,
+        tree: tree as Parameters<typeof octokit.git.createTree>[0]['tree'],
       });
 
       // Create commit

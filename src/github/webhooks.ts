@@ -3,6 +3,7 @@ import { logger } from '../utils/logger';
 import { ReviewService } from '../services/review-service';
 import { NotificationService } from '../services/notification-service';
 import { AnalyticsService } from '../services/analytics-service';
+import { AIReviewResult } from '../types';
 
 export function setupWebhooks(app: Probot) {
   const reviewService = new ReviewService();
@@ -257,7 +258,7 @@ async function handleInstallation(context: Context<'installation.created'>) {
   // Send welcome notification
 }
 
-function formatReviewComment(result: any): string {
+function formatReviewComment(result: AIReviewResult): string {
   const { summary, issues, positiveFindings, overallScore, recommendations } = result;
 
   let comment = `# 🥋 Code Sensei Review\n\n`;
