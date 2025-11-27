@@ -28,7 +28,7 @@ export function startDashboard(port: number) {
   setupRoutes(app);
 
   // Error handling
-  app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  app.use((err: Error, req: express.Request, res: express.Response, _next: express.NextFunction) => {
     logger.error('Dashboard error', {
       error: err.message,
       stack: err.stack,
