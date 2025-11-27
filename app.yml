@@ -1,0 +1,50 @@
+# GitHub App configuration
+# See https://probot.github.io/docs/configuration/
+
+# The name of your GitHub App
+name: Code Sensei
+
+# The description of your GitHub App
+description: AI-powered GitHub bot for automated code review & auto-fix commits
+
+# The homepage of your GitHub App
+homepage: https://github.com/clduab11/code-sensei
+
+# The permissions required by your GitHub App
+permissions:
+  checks: write
+  contents: write
+  issues: write
+  pull_requests: write
+  statuses: write
+
+# The events your GitHub App subscribes to
+events:
+  - check_run
+  - check_suite
+  - pull_request
+  - pull_request_review
+  - pull_request_review_comment
+  - status
+
+# Features
+features:
+  # Enable auto-merge (when enabled)
+  auto_merge: false
+  
+  # Enable auto-fix commits
+  auto_fix: true
+  
+  # Minimum score for auto-merge
+  min_score: 80
+  
+  # Enable security scanning
+  security_scan: true
+  
+  # Languages to analyze
+  languages:
+    - python
+    - typescript
+    - javascript
+    - go
+    - rust
