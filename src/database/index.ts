@@ -1,14 +1,65 @@
-import { Pool } from 'pg';
+import { Pool, PoolConfig } from 'pg';
+import { readFileSync } from 'fs';
 import { config } from '../config';
 import { logger } from '../utils/logger';
 
 let pool: Pool | null = null;
 
+/**
+ * Builds the SSL configuration for the PostgreSQL connection.
+ * 
+ * SSL Configuration:
+ * - DB_SSL: Enable/disable SSL (true/false). Defaults to true in production.
+ * - DB_SSL_REJECT_UNAUTHORIZED: Verify server certificate (true/false). 
+ *   Defaults to true in production for security. Set to false only when using
+ *   self-signed certificates or providers that don't support full verification
+ *   (e.g., some Heroku/AWS setups). See DEPLOYMENT.md#database-ssl-configuration.
+ * - DB_SSL_CA_PATH: Path to a CA certificate file for custom certificate validation.
+ */
+function buildSslConfig(): PoolConfig['ssl'] {
+  // In non-production environments, SSL is disabled by default unless explicitly enabled
+  const sslEnabled = process.env.DB_SSL !== undefined
+    ? process.env.DB_SSL === 'true'
+    : config.env === 'production';
+
+  if (!sslEnabled) {
+    return false;
+  }
+
+  // Default to rejecting unauthorized certificates in production for security
+  // This can be disabled via DB_SSL_REJECT_UNAUTHORIZED=false for providers
+  // that use self-signed or unverifiable certificates
+  const rejectUnauthorized = process.env.DB_SSL_REJECT_UNAUTHORIZED !== undefined
+    ? process.env.DB_SSL_REJECT_UNAUTHORIZED === 'true'
+    : config.env === 'production';
+
+  const sslConfig: { rejectUnauthorized: boolean; ca?: string } = {
+    rejectUnauthorized,
+  };
+
+  // Load custom CA certificate if provided
+  const caPath = process.env.DB_SSL_CA_PATH;
+  if (caPath) {
+    try {
+      sslConfig.ca = readFileSync(caPath, 'utf-8');
+      logger.info('Loaded custom CA certificate for database SSL', { caPath });
+    } catch (error) {
+      logger.error('Failed to load CA certificate file', {
+        caPath,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      throw new Error(`Failed to load CA certificate from ${caPath}`);
+    }
+  }
+
+  return sslConfig;
+}
+
 export async function initializeDatabase() {
   try {
     pool = new Pool({
       connectionString: config.database.url,
-      ssl: config.env === 'production' ? { rejectUnauthorized: false } : false,
+      ssl: buildSslConfig(),
     });
 
     await pool.query('SELECT NOW()');

@@ -197,6 +197,77 @@ server {
 }
 ```
 
+### Database SSL Configuration
+
+The application supports configurable SSL settings for PostgreSQL database connections. This is important for securing data in transit.
+
+#### Environment Variables
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `DB_SSL` | Enable/disable SSL for database connections (`true`/`false`) | `true` in production, `false` otherwise |
+| `DB_SSL_REJECT_UNAUTHORIZED` | Verify SSL certificates (`true`/`false`) | `true` in production |
+| `DB_SSL_CA_PATH` | Path to custom CA certificate file | Not set |
+
+#### Configuration Examples
+
+**Standard production setup (recommended):**
+```env
+# Use SSL with full certificate verification
+DB_SSL=true
+DB_SSL_REJECT_UNAUTHORIZED=true
+```
+
+**Using a custom CA certificate:**
+```env
+# For private CAs or self-managed certificates
+DB_SSL=true
+DB_SSL_REJECT_UNAUTHORIZED=true
+DB_SSL_CA_PATH=/path/to/ca-certificate.crt
+```
+
+**Cloud providers with self-signed certificates:**
+```env
+# Use only when the provider doesn't support full verification
+# (e.g., some Heroku, AWS RDS, or development databases)
+DB_SSL=true
+DB_SSL_REJECT_UNAUTHORIZED=false
+```
+
+> ⚠️ **Security Note**: Setting `DB_SSL_REJECT_UNAUTHORIZED=false` disables certificate verification, which can expose connections to man-in-the-middle attacks. Only use this when absolutely necessary and understand the security implications.
+
+#### Kubernetes/Docker with CA Certificates
+
+When deploying with custom CA certificates in containerized environments:
+
+```yaml
+# Kubernetes secret for CA certificate
+apiVersion: v1
+kind: Secret
+metadata:
+  name: db-ca-cert
+type: Opaque
+data:
+  ca-certificate.crt: <base64-encoded-certificate>
+
+---
+# Mount in deployment
+spec:
+  containers:
+  - name: code-sensei
+    volumeMounts:
+    - name: db-ca-cert
+      mountPath: /etc/ssl/db
+      readOnly: true
+    env:
+    - name: DB_SSL_CA_PATH
+      value: /etc/ssl/db/ca-certificate.crt
+  volumes:
+  - name: db-ca-cert
+    secret:
+      secretName: db-ca-cert
+```
+
 ## Database Setup
 
 ### Migrations
