@@ -201,13 +201,17 @@ server {
 
 ### Migrations
 
+The database schema is automatically created when the application starts. For manual migrations:
+
 ```bash
-# Run migrations
+# Run migrations (initializes database tables)
 npm run db:migrate
 
-# Rollback if needed
+# Rollback (placeholder - manual intervention required)
 npm run db:rollback
 ```
+
+Note: The current implementation automatically creates/verifies all required tables on startup. Migration scripts are provided for manual control if needed.
 
 ### Backup
 

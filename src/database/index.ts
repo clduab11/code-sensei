@@ -74,8 +74,28 @@ async function createTables() {
 
     CREATE TABLE IF NOT EXISTS team_configs (
       id SERIAL PRIMARY KEY,
-      repository_id INTEGER REFERENCES repositories(id),
+      repository_id INTEGER UNIQUE REFERENCES repositories(id),
       config JSONB NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS false_positives (
+      id SERIAL PRIMARY KEY,
+      repository_id INTEGER REFERENCES repositories(id),
+      issue_category VARCHAR(50) NOT NULL,
+      issue_code VARCHAR(100),
+      message TEXT NOT NULL,
+      feedback_reason TEXT,
+      user_id VARCHAR(255) NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE TABLE IF NOT EXISTS developer_preferences (
+      id SERIAL PRIMARY KEY,
+      repository_id INTEGER REFERENCES repositories(id),
+      user_id VARCHAR(255) NOT NULL,
+      preferences JSONB NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );

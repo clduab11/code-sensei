@@ -4,6 +4,9 @@ import { logger } from '../utils/logger';
 import { config } from '../config';
 import * as Diff from 'diff';
 
+// Type alias for GitHub tree object parameter
+type GitHubTreeObject = Parameters<Octokit['git']['createTree']>[0]['tree'];
+
 export class AutoFixService {
   /**
    * Apply auto-fixes to a pull request
@@ -177,10 +180,12 @@ export class AutoFixService {
         return item;
       });
 
+      // Type assertion needed: tree structure from getTree() is compatible with createTree()
+      // but needs modified SHA values for updated files
       const { data: newTree } = await octokit.git.createTree({
         owner: context.owner,
         repo: context.repo,
-        tree: tree as any,
+        tree: tree as GitHubTreeObject,
       });
 
       // Create commit
@@ -196,7 +201,7 @@ export class AutoFixService {
       await octokit.git.updateRef({
         owner: context.owner,
         repo: context.repo,
-        ref: `heads/${context.ref}`,
+        ref: context.ref.startsWith('refs/') ? context.ref : `heads/${context.ref}`,
         sha: newCommit.sha,
       });
 

@@ -14,7 +14,9 @@
     "lint:fix": "eslint src --ext .ts --fix",
     "format": "prettier --write \"src/**/*.ts\"",
     "docker:build": "docker build -t code-sensei .",
-    "docker:run": "docker run -p 3000:3000 code-sensei"
+    "docker:run": "docker run -p 3000:3000 code-sensei",
+    "db:migrate": "node -r dotenv/config scripts/migrate.js",
+    "db:rollback": "node -r dotenv/config scripts/rollback.js"
   },
   "keywords": [
     "github",
@@ -51,7 +53,6 @@
     "tree-sitter-typescript": "^0.20.0",
     "tree-sitter-go": "^0.20.0",
     "tree-sitter-rust": "^0.20.0",
-    "snyk": "^1.1290.0",
     "semver": "^7.5.0",
     "pg": "^8.11.0",
     "redis": "^4.6.0",
@@ -88,7 +89,8 @@
     "nodemon": "^3.0.0",
     "supertest": "^6.3.0",
     "@types/supertest": "^2.0.0",
-    "smee-client": "^1.2.0"
+    "smee-client": "^1.2.0",
+    "snyk": "^1.1290.0"
   },
   "engines": {
     "node": ">=18.0.0",

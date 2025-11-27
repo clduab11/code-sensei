@@ -1,5 +1,4 @@
 import { CodeFile, AnalysisResult, ReviewIssue } from '../types';
-import { logger } from '../utils/logger';
 
 export class StaticAnalyzer {
   /**

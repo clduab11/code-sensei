@@ -178,7 +178,7 @@ async function getRepositoryStats(req: Request, res: Response) {
 async function getRepositoryReviews(req: Request, res: Response) {
   try {
     const { owner, repo } = req.params;
-    const limit = parseInt(req.query.limit as string) || 50;
+    const limit = Math.min(parseInt(req.query.limit as string) || 50, 100);
     const db = getDatabase();
 
     const reviews = await db.query(
@@ -224,7 +224,7 @@ async function getReviewDetails(req: Request, res: Response) {
 async function getQualityTrends(req: Request, res: Response) {
   try {
     const { owner, repo } = req.params;
-    const days = parseInt(req.query.days as string) || 30;
+    const days = Math.min(parseInt(req.query.days as string) || 30, 365);
     const db = getDatabase();
 
     const trends = await db.query(
@@ -236,10 +236,10 @@ async function getQualityTrends(req: Request, res: Response) {
        FROM reviews r
        JOIN repositories rp ON r.repository_id = rp.id
        WHERE rp.full_name = $1
-         AND created_at > NOW() - INTERVAL '${days} days'
+         AND created_at > NOW() - make_interval(days => $2)
        GROUP BY DATE(created_at)
        ORDER BY date DESC`,
-      [`${owner}/${repo}`]
+      [`${owner}/${repo}`, days]
     );
 
     res.json(trends.rows);

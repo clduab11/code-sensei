@@ -94,7 +94,7 @@ export class NotificationService {
       }
 
       await this.slack!.chat.postMessage({
-        channel: '#code-reviews', // Make this configurable
+        channel: config.integrations.slack?.defaultChannel || '#code-reviews',
         blocks,
         text: `Code review completed for ${data.repo} PR #${data.prNumber}`,
       });

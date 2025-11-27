@@ -241,7 +241,7 @@ export class ReviewService {
   /**
    * Deduplicate issues
    */
-  private deduplicateIssues(issues: any[]) {
+  private deduplicateIssues(issues: ReviewIssue[]) {
     const seen = new Set<string>();
     return issues.filter((issue) => {
       const key = `${issue.file}:${issue.line}:${issue.message}`;
@@ -256,7 +256,7 @@ export class ReviewService {
   /**
    * Calculate adjusted score based on issues found
    */
-  private calculateAdjustedScore(baseScore: number, issues: any[]): number {
+  private calculateAdjustedScore(baseScore: number, issues: ReviewIssue[]): number {
     const severityPenalties = {
       critical: 10,
       high: 5,

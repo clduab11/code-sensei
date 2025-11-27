@@ -32,14 +32,15 @@ const ConfigSchema = z.object({
   }),
 
   security: z.object({
-    jwtSecret: z.string(),
-    sessionSecret: z.string(),
+    jwtSecret: z.string().min(1, 'JWT_SECRET is required and cannot be empty'),
+    sessionSecret: z.string().min(1, 'SESSION_SECRET is required and cannot be empty'),
   }),
 
   integrations: z.object({
     slack: z.object({
       botToken: z.string().optional(),
       signingSecret: z.string().optional(),
+      defaultChannel: z.string().default('#code-reviews'),
     }).optional(),
     jira: z.object({
       host: z.string().optional(),
@@ -83,6 +84,28 @@ const ConfigSchema = z.object({
   }),
 });
 
+// Validate required environment variables
+function validateRequiredSecrets() {
+  const missing: string[] = [];
+  
+  if (!process.env.JWT_SECRET) {
+    missing.push('JWT_SECRET');
+  }
+  if (!process.env.SESSION_SECRET) {
+    missing.push('SESSION_SECRET');
+  }
+  
+  if (missing.length > 0) {
+    throw new Error(
+      `Required security environment variables are missing: ${missing.join(', ')}\n` +
+      'Please set these variables in your .env file or environment before starting the application.'
+    );
+  }
+}
+
+// Validate secrets before parsing config
+validateRequiredSecrets();
+
 export const config = ConfigSchema.parse({
   env: process.env.NODE_ENV || 'development',
   port: parseInt(process.env.PORT || '3000', 10),
@@ -112,14 +135,15 @@ export const config = ConfigSchema.parse({
   },
 
   security: {
-    jwtSecret: process.env.JWT_SECRET || 'change-me-in-production',
-    sessionSecret: process.env.SESSION_SECRET || 'change-me-in-production',
+    jwtSecret: process.env.JWT_SECRET,
+    sessionSecret: process.env.SESSION_SECRET,
   },
 
   integrations: {
     slack: {
       botToken: process.env.SLACK_BOT_TOKEN,
       signingSecret: process.env.SLACK_SIGNING_SECRET,
+      defaultChannel: process.env.SLACK_DEFAULT_CHANNEL || '#code-reviews',
     },
     jira: {
       host: process.env.JIRA_HOST,

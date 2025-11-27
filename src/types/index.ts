@@ -1,5 +1,3 @@
-import { Octokit } from '@octokit/rest';
-
 export interface PullRequestContext {
   owner: string;
   repo: string;

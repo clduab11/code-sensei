@@ -3,6 +3,7 @@ import { logger } from '../utils/logger';
 import { ReviewService } from '../services/review-service';
 import { NotificationService } from '../services/notification-service';
 import { AnalyticsService } from '../services/analytics-service';
+import { AIReviewResult } from '../types';
 
 export function setupWebhooks(app: Probot) {
   const reviewService = new ReviewService();
@@ -109,8 +110,10 @@ async function handlePullRequestReview(
         .map(issue => ({
           path: issue.file,
           line: issue.line!,
+          side: 'RIGHT' as const, // 'RIGHT' = PR branch (new code), 'LEFT' = base branch (old code)
           body: `**${issue.severity.toUpperCase()}**: ${issue.message}\n\n${issue.suggestion || ''}`,
-        }));
+        }))
+        .slice(0, 30); // GitHub API limit is 30, not 50
 
       if (comments.length > 0) {
         await context.octokit.pulls.createReview({
@@ -118,7 +121,7 @@ async function handlePullRequestReview(
           repo: repository.name,
           pull_number: pull_request.number,
           event: 'COMMENT',
-          comments: comments.slice(0, 50), // GitHub API limit
+          comments,
         });
       }
     }
@@ -255,7 +258,7 @@ async function handleInstallation(context: Context<'installation.created'>) {
   // Send welcome notification
 }
 
-function formatReviewComment(result: any): string {
+function formatReviewComment(result: AIReviewResult): string {
   const { summary, issues, positiveFindings, overallScore, recommendations } = result;
 
   let comment = `# 🥋 Code Sensei Review\n\n`;

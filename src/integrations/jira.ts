@@ -6,12 +6,16 @@ export class JiraIntegration {
   private client?: JiraClient;
 
   constructor() {
-    if (config.integrations.jira?.host) {
+    if (
+      config.integrations.jira?.host &&
+      config.integrations.jira.email &&
+      config.integrations.jira.apiToken
+    ) {
       this.client = new JiraClient({
         protocol: 'https',
         host: config.integrations.jira.host,
-        username: config.integrations.jira.email!,
-        password: config.integrations.jira.apiToken!,
+        username: config.integrations.jira.email,
+        password: config.integrations.jira.apiToken,
         apiVersion: '2',
         strictSSL: true,
       });
