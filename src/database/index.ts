@@ -1,5 +1,5 @@
 import { Pool, PoolConfig } from 'pg';
-import { readFileSync } from 'fs';
+import { readFile } from 'fs/promises';
 import { config } from '../config';
 import { logger } from '../utils/logger';
 
@@ -16,7 +16,7 @@ let pool: Pool | null = null;
  *   (e.g., some Heroku/AWS setups). See DEPLOYMENT.md#database-ssl-configuration.
  * - DB_SSL_CA_PATH: Path to a CA certificate file for custom certificate validation.
  */
-function buildSslConfig(): PoolConfig['ssl'] {
+async function buildSslConfig(): Promise<PoolConfig['ssl']> {
   // In non-production environments, SSL is disabled by default unless explicitly enabled
   const sslEnabled = process.env.DB_SSL !== undefined
     ? process.env.DB_SSL === 'true'
@@ -41,7 +41,7 @@ function buildSslConfig(): PoolConfig['ssl'] {
   const caPath = process.env.DB_SSL_CA_PATH;
   if (caPath) {
     try {
-      sslConfig.ca = readFileSync(caPath, 'utf-8');
+      sslConfig.ca = await readFile(caPath, 'utf-8');
       logger.info('Loaded custom CA certificate for database SSL', { caPath });
     } catch (error) {
       logger.error('Failed to load CA certificate file', {
@@ -59,7 +59,7 @@ export async function initializeDatabase() {
   try {
     pool = new Pool({
       connectionString: config.database.url,
-      ssl: buildSslConfig(),
+      ssl: await buildSslConfig(),
     });
 
     await pool.query('SELECT NOW()');
