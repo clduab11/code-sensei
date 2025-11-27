@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+yarn.lock
+
+# Build outputs
+dist/
+build/
+*.tsbuildinfo
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Testing
+coverage/
+.nyc_output/
+*.log
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Database
+*.sqlite
+*.db
+
+# Private keys
+*.pem
+*.key
+private-key.pem
+
+# Cache
+.cache/
+.parcel-cache/
+.npm/
+
+# Docker
+docker-compose.override.yml
+
+# Probot specific
+.probot-app-id
+.probot-private-key
+
+# Monitoring
+logs/
+*.log
+
+# OS
+Thumbs.db
